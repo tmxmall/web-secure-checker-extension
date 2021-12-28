@@ -1,8 +1,23 @@
 # vue-chrome-extension-boilerplate
 
-![Node.js CI](https://github.com/mubaidr/vue-chrome-extension-boilerplate/workflows/Node.js%20CI/badge.svg)[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+在浏览器运行环境中，对指定网页的网络请求进行拦截和分析，对用户注册登录等页面的密码输入框进行监听分析密码强度
 
-Boilerplate for Chrome extension using Vue.js and Webpack with hot-reload enabled.
+
+1. 登录注册页面的密码强度识别
+2. 删除接口没有参数
+3. 删除接口是get请求
+4. 响应结果中包含md5结果
+5. 响应结果中包含未加密的phone结果
+6. 响应结果中包含未加密的邮箱
+7. 响应结果中包含密码字段等关键词
+8. 响应结果包含身份证号
+9. 响应结果体积太大，数据太多
+10. 出现跨域请求
+11. 单位时间的请求频次问题
+12. 存在图片资源未压缩问题
+13. 非Https网站服务
+14. cookie未设置httpOnly
+15. same-site配置
 
 ## Scripts
 
@@ -21,26 +36,3 @@ Build extension zip:
 Lint all source files:
 
 `npm run lint`
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/stealthleads"><img src="https://avatars0.githubusercontent.com/u/57643807?v=4" width="100px;" alt=""/><br /><sub><b>stealthleads</b></sub></a><br /><a href="#infra-stealthleads" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/mubaidr/vue-chrome-extension-boilerplate/commits?author=stealthleads" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/linkerGitHub"><img src="https://avatars3.githubusercontent.com/u/15519222?v=4" width="100px;" alt=""/><br /><sub><b>linkerGitHub</b></sub></a><br /><a href="https://github.com/mubaidr/vue-chrome-extension-boilerplate/commits?author=linkerGitHub" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/andrewmackie"><img src="https://avatars1.githubusercontent.com/u/1217203?v=4" width="100px;" alt=""/><br /><sub><b>Andrew Mackie</b></sub></a><br /><a href="https://github.com/mubaidr/vue-chrome-extension-boilerplate/commits?author=andrewmackie" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://momane.com"><img src="https://avatars3.githubusercontent.com/u/3389447?v=4" width="100px;" alt=""/><br /><sub><b>Hank X</b></sub></a><br /><a href="https://github.com/mubaidr/vue-chrome-extension-boilerplate/commits?author=hankxdev" title="Code">💻</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

@@ -1,9 +1,9 @@
 import 'bulma-fluent/bulma.sass'
 import Vue from 'vue'
-import App from './App.vue'
+import Option from './Option.vue'
 
 // eslint-disable-next-line
 new Vue({
   el: '#app',
-  render: (h) => h(App),
+  render: (h) => h(Option),
 })

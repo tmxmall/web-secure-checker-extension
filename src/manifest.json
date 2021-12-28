@@ -8,8 +8,20 @@
   "content_scripts": [
     {
       "all_frames": false,
-      "js": ["./contentScripts.js"],
+      "js": ["./contentScripts2.js"],
       "matches": ["http://*/*", "https://*/*"],
+      "run_at": "document_end"
+    },
+    {
+      "all_frames": false,
+      "js": ["./contentScripts.js"],
+      "matches": ["http://*.tmxmall2.com/*", "https://*.tmxmall2.com/*"],
+      "run_at": "document_end"
+    },
+    {
+      "all_frames": false,
+      "js": ["./content.js"],
+      "matches": ["http://*.tmxmall.com/*", "https://*.tmxmall.com/*"],
       "run_at": "document_end"
     }
   ],
@@ -27,6 +39,12 @@
     "chrome_style": false,
     "page": "./options.html"
   },
-  "permissions": ["http://*/*", "https://*/*", "storage", "tabs", "webRequest"],
+  "permissions": [
+    "http://*/*",
+    "https://*/*",
+    "storage",
+    "tabs",
+    "webRequest"
+  ],
   "version": "1.0.0"
 }

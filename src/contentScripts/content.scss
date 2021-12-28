@@ -1,0 +1,11 @@
+.extension-context {
+  position: fixed;
+  z-index: 999;
+  right: 10px;
+  top: 10px;
+  min-width: 200px;
+  border: 1px dashed rgb(163, 163, 163);
+  padding: 10px;
+  opacity: 0.5;
+  @import "../../node_modules/element-ui/packages/theme-chalk/src/button.scss";
+}

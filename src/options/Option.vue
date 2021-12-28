@@ -1,6 +1,6 @@
 <template>
-  <div class="popup-page">
-    hi. i am popup page
+  <div class="options-page">
+    Options page
   </div>
 </template>
 
@@ -14,11 +14,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.popup-page {
+<style lang="scss">
+.options-page {
   min-height: 200px;
   min-width: 400px;
-  color: gray;
+  color: red;
+  text-align: center;
 }
-
 </style>

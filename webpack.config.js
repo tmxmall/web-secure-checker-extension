@@ -18,6 +18,8 @@ function configFunc(env, argv) {
       popup: './popup/index.js',
       background: './background/index.js',
       contentScripts: './contentScripts/index.js',
+      contentScripts2: './contentScripts/index2.js',
+      content: './contentScripts/content.js',
     },
     output: {
       path: path.resolve(__dirname, './dist'),
@@ -26,6 +28,7 @@ function configFunc(env, argv) {
     },
     module: {
       rules: [
+        { test: /\.(ttf|eot|svg|woff|woff2)$/, use: 'url-loader' }, // 处理 字体文件的 loader 
         {
           test: /\.vue$/,
           loader: 'vue-loader',
@@ -109,7 +112,7 @@ function configFunc(env, argv) {
       new webpack.HotModuleReplacementPlugin(),
       new ExtensionReloader({
         entries: {
-          contentScript: 'contentScripts',
+          contentScript: 'content',
           background: 'background',
           extensionPage: 'popup',
           options: 'options',

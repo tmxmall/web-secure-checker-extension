@@ -1,9 +1,12 @@
-import 'bulma-fluent/bulma.sass'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import Vue from 'vue'
-import App from './App.vue'
+import Popup from './Popup.vue'
+
+Vue.use(ElementUI)
 
 // eslint-disable-next-line
 new Vue({
   el: '#app',
-  render: (h) => h(App),
+  render: (h) => h(Popup),
 })
