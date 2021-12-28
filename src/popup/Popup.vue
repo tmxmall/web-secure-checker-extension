@@ -41,6 +41,27 @@
       <el-form-item label="用户凭证:">
         <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="用户凭证:">
+        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
     </el-form>
   </div>
 </template>

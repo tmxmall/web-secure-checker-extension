@@ -37,3 +37,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
   }
 })
+
+chrome.webRequest.onHeadersReceived.addListener(
+  (details) => {
+    const {initiator, method, url, type, tabId} = details
+    // console.log(details)
+    // console.log(initiator, method, type, tabId, url)
+    return {}
+  },
+  {urls: ["<all_urls>"]}
+)
+
+// 对请求和响应的数据机型获取并输送到util进行分析，将分析的结果输送到系统存储
+chrome.webRequest.onBeforeRequest.addListener(
+  (details) => {
+    console.log('before request')
+    console.log({details})
+  },
+  {urls: ["<all_urls>"]} // TODO: match the configured urls
+)
+chrome.webRequest.onCompleted.addListener(
+  e => {
+    console.log('compelted')
+    console.log(e)
+  },
+  {urls: ["<all_urls>"]}
+)
+
+chrome.webRequest.onHeadersReceived.addListener(detail => {
+  console.log('response header')
+  console.log(detail)
+}, {urls: ["<all_urls>"]})

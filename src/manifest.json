@@ -44,7 +44,9 @@
     "https://*/*",
     "storage",
     "tabs",
-    "webRequest"
+    "webRequest",
+    "webRequestBlocking",
+    "cookies"
   ],
   "version": "1.0.0"
 }
