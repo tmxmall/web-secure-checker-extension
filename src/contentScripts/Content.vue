@@ -1,5 +1,7 @@
 <template>
   <div v-if="config && config.enabled" class="extension-context" :class="[fold ? 'fold' : '', 'level-' + errorLevel]">
+    <!-- 由于本组件是content注入模式，该组件内的事件响应会失效，需要借用inject模式注入组件 -->
+    <!-- https://www.bookstack.cn/read/chrome-plugin-develop/spilt.6.spilt.4.8bdb1aac68bbdc44.md -->
     <span class="fold-toggle" @click="fold = !fold"></span>
     <div class="checked-result-range" v-if="!fold">
       <!-- 如果开启了密码强度计算且当前页面有密码输入框 -->
@@ -14,6 +16,14 @@
 import util from '../biz/util'
 import * as message from '../biz/message'
 import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_MSG_BIZ_SAVE_CONFIG } from '../biz/common'
+
+/**
+ * 插件支持配置多个contentjs脚本，可以在文档加载之前就注入一段脚本，对xmlHttpRequest类进行覆盖重构
+ * 重构中
+ *  需自定义requestId
+ *  对send方法尽心重写，实现将所有数据参数发送到background
+ *  对responseText响应进行拦截并将数据发送到background
+ */
 
 export default {
   data () {
