@@ -1,8 +1,19 @@
 <template>
   <div class="popup-page">
-    <el-form label-width="80px" label-position="left">
+    <el-form label-width="80px" label-position="left" size="mini">
       <!-- 是否全局启用 -->
       <el-form-item label="插件状态:">
+        <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="屏显数据周期:">
+        <el-select v-model="config.showDataRange" size="mini">
+          <el-option :label="1">1小时</el-option>
+          <el-option :label="3">3小时</el-option>
+          <el-option :label="8">8小时</el-option>
+          <el-option :label="24">24小时</el-option>
+          <el-option :label="72">3天</el-option>
+          <el-option :label="168">7天</el-option>
+        </el-select>
         <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>
       <!-- 仅对配置的网址有效，后期可实现正则 -->

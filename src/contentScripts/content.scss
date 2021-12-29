@@ -1,11 +1,4 @@
 .extension-context {
-  position: fixed;
-  z-index: 999;
-  right: 10px;
-  top: 10px;
-  min-width: 200px;
-  border: 1px dashed rgb(163, 163, 163);
-  padding: 10px;
-  opacity: 0.5;
+  // 使element-ui的样式在extension-context下才生效，避免污染宿主环境
   @import "../../node_modules/element-ui/packages/theme-chalk/src/button.scss";
 }
