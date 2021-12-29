@@ -25,7 +25,7 @@
       <el-form-item label="密码强度:">
         <el-switch v-model="config.pwdCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
-      <!-- 删除操作不带参数等 -->
+      <!-- 删除操作，请求体过大 -->
       <el-form-item label="请求安全:">
         <el-switch v-model="config.requestDataCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
@@ -38,31 +38,14 @@
         <el-switch v-model="config.crossSiteCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
       <!-- 检查cookie是否设置合理 -->
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      <el-form-item label="加载性能:">
+        <el-switch v-model="config.performanceCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
-      <el-form-item label="用户凭证:">
-        <el-switch v-model="config.cookieCheckEnabeld" @change="change"></el-switch> 启用
+      <el-form-item label="站点安全:">
+        <el-switch v-model="config.siteCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
     </el-form>
+    <el-button type="primary" size="small" @click="gotoOptions">查看统计</el-button>
   </div>
 </template>
 
@@ -103,6 +86,18 @@ export default {
     },
     saveConfig () {
       message.sendMsgToBackground(CONTENT_MSG_BIZ_SAVE_CONFIG, this.config)
+    },
+    gotoOptions () {
+      // chrome.runtime.openOptionsPage()
+      const optionsUrl = chrome.extension.getURL('options.html')
+      chrome.tabs.query({url: optionsUrl}, (tabs) => {
+        if (tabs.length) {
+          chrome.tabs.update(tabs[0].id, {active: true})
+        } else {
+          chrome.tabs.create({url: optionsUrl})
+        }
+        window.close()
+      })
     }
   }
 }
