@@ -2,8 +2,10 @@
   <div v-if="config && config.enabled" class="extension-context" :class="[fold ? 'fold' : '', 'level-' + errorLevel]">
     <!-- 由于本组件是content注入模式，该组件内的事件响应会失效，需要借用inject模式注入组件 -->
     <!-- https://www.bookstack.cn/read/chrome-plugin-develop/spilt.6.spilt.4.8bdb1aac68bbdc44.md -->
-    <span class="fold-toggle" @click="fold = !fold"></span>
-    <div class="checked-result-range" v-if="!fold">
+    <span class="fold-toggle" @click="toggle">
+      {{ fold ? '展开':'收起' }}
+    </span>
+    <div class="checked-result-range" :class="{fold}">
       <!-- 如果开启了密码强度计算且当前页面有密码输入框 -->
       <div v-if="config.pwdCheckEnabeld && hasPasswordInput">
         密码强度：<span :class="'strong-' + passWordLevel">{{ passWordLevel }}</span>
@@ -96,6 +98,9 @@ export default {
           this.passWordLevel = level
         })
       }
+    },
+    toggle () {
+      this.fold = !this.fold
     }
   }
 }
@@ -106,24 +111,40 @@ export default {
   z-index: 999;
   right: 10px;
   top: 10px;
-  min-width: 200px;
+  width: 400px;
+  min-height: 30px;
   padding: 10px;
   border: 1px dashed rgb(163, 163, 163);
   opacity: 0.5;
   transition: all .5s;
+  background: white;
   &.fold {
-    width: 40px;
-    height: 40px;
-    min-width: inherit;
-    min-height: inherit;
+    width: 30px;
+    height: 30px;
     overflow: hidden;
+    border-radius: 10%;
   }
   .fold-toggle {
     display: inline-block;
     width: 30px;
     height: 30px;
-    background: gray;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    color: red;
+    text-align: center;
+    line-height: 30px;
+  }
+  .checked-result-range {
+    transition: all 3s;
+    min-width: 200px;
+    overflow: hidden;
+    margin-top: 8px;
+    &.fold {
+      height: 0;
+    }
   }
 }
   .strong-0 {

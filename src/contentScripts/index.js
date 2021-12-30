@@ -1,4 +1,3 @@
-import './index.sass'
 import util from  '../biz/util'
 import { sendMsgToBackground } from '../biz/message'
 

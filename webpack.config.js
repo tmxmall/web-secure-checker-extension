@@ -53,7 +53,7 @@ function configFunc(env, argv) {
             {
               loader: 'sass-loader',
               // eslint-disable-next-line
-              options: { implementation: require('sass') },
+              options: { implementation: require('sass'), quietDeps: true },
             },
           ],
         },

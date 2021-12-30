@@ -1,4 +1,7 @@
 .extension-context {
   // 使element-ui的样式在extension-context下才生效，避免污染宿主环境
-  @import "../../node_modules/element-ui/packages/theme-chalk/src/button.scss";
+  $--font-path: '../../node_modules/element-ui/packages/theme-chalk/src/fonts';
+  @import "~element-ui/packages/theme-chalk/src/index.scss";
+  // @import "../../node_modules/element-ui/packages/theme-chalk/src/index.scss";
+  // @import "../../node_modules/element-ui/packages/theme-chalk/src/icon.scss";
 }
