@@ -17,7 +17,7 @@
 <script>
 import util from '../biz/util'
 import * as message from '../biz/message'
-import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_MSG_BIZ_SAVE_CONFIG } from '../biz/common'
+import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_MSG_BIZ_SAVE_CONFIG, UNIQUE_INJECT_ID } from '../biz/common'
 
 /**
  * 插件支持配置多个contentjs脚本，可以在文档加载之前就注入一段脚本，对xmlHttpRequest类进行覆盖重构
@@ -74,6 +74,18 @@ export default {
           // TODO: 需要注销卸载此节点，没啥用了
         }
       })
+    // 由于injectjs拦截到数据后，是不能对拦截到的数据内容直接传输到插件中心，所以只能在特定dom元素上进行数据存储
+    // 然后由content脚本定时去获取该内容(太土)
+    // 可以尝试contentjs轮询localstorage（不行）
+    // postMessage监听injectjs发送的消息内容
+    window.addEventListener('message', event => {
+      const data = event.data || {}
+      // 表明是来自自己的injectjs发送的内容
+      if (data.from === UNIQUE_INJECT_ID) {
+        // 将数据存库并添加data
+        this.collectedData.push(data.msg)
+      }
+    })
   },
   methods: {
     initWhenEnable () {
