@@ -37,7 +37,7 @@ export default {
       config: {},
       data: [],
       currentSite: '',
-      pageSize: 10,
+      pageSize: 50,
       currentPage: 1,
     }
   },
