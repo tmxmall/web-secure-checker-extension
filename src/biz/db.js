@@ -19,12 +19,15 @@ const dbInstance = new Dexie('wsc_data_db')
  */
 dbInstance
   .version(1)
-  .stores({ request_history: '++id,initiator,url,method,reqHeaders,resHeaders,timeUsed,reqBody,resBody,statusCode,createDate,timeStamp,timeUsed' })
+  .stores({
+    // 定义表名和需要索引的字段
+    request_history: '++id,initiator,url,method,reqHeaders,resHeaders,timeUsed,reqBody,resBody,statusCode,createDate,timeStamp'
+  })
 
-// /**
-//  * 版本升级，仅增加一个新的索引，无修改其他字段
-//  * 备注：如有其他非索引字段内容变化，需再次特别说明
-//  */
+/**
+ * 版本升级，仅增加一个新的索引，无修改其他字段
+ * 备注：如有其他非索引字段内容变化，需再次特别说明
+ */
 // dbInstance
 //   .version(2)
 //   .stores({ request_history: '++id,url,status,time' }) // 定义request_history表
@@ -61,7 +64,7 @@ const localdb = {
     requestRecord.createDate = dayjs().format('YYYY-MM-DD HH:mm:ss')
     return dbInstance.table('request_history').add(requestRecord)
   },
-  query(daystoNow = 7) {
+  query(siteHost, daystoNow = 7) {
     const dateStartStr = dayjs().subtract(daystoNow, 'day').format('YYYY-MM-DD HH:mm:ss')
     const dateEndStr = dayjs().format('YYYY-MM-DD HH:mm:ss')
     return dbInstance

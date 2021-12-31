@@ -1,7 +1,8 @@
-import { CONTENT_MSG_TYPE, CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_SAVE_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, CONTENT_MSG_BIZ_NEW_DATA_DETECTED } from '../biz/common'
+import { CONTENT_MSG_TYPE, CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_SAVE_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_MSG_BIZ_LOAD_ALL_DATA } from '../biz/common'
 import { sendMsgToTab } from '../biz/message'
 import util from '../biz/util'
 import rule from '../biz/rule'
+import localdb from '../biz/db'
 
 if (process.env.NODE_ENV === 'development') {
   console.log('development')
@@ -70,6 +71,13 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       if (newRequestRecord.hitTypes && newRequestRecord.hitTypes.length) {
         sendMsgToTab(newRequestRecord, msg.msgId, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, sender.tab.id)
       }
+      return
+    }
+    if (bizType === CONTENT_MSG_BIZ_LOAD_ALL_DATA) {
+      // 查询数据，这里需要根据当前页面的host匹配只查询对应网站的统计数据
+      localdb.query(sender.origin, 7).then(records => {
+        sendMsgToTab(records, msg.msgId, CONTENT_MSG_BIZ_LOAD_ALL_DATA, sender.tab.id)
+      })
       return
     }
     // send msg back(为了确保回复消息可能有偶异步或同步，所以不用sendResponse进行回复，统一使用向指定tab发送消息)

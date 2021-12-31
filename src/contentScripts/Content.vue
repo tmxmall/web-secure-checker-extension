@@ -38,7 +38,7 @@
 <script>
 import util from '../biz/util'
 import * as message from '../biz/message'
-import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, CONTENT_MSG_BIZ_SAVE_CONFIG, HIT_TYPE_CROSS_SITE, HIT_TYPE_DELETE_WITHOUT_PARAM, HIT_TYPE_DELETE_WITH_GET, HIT_TYPE_FREQUENCE, HIT_TYPE_HTTP_ONLY, HIT_TYPE_MAX_PAGE_SIZE, HIT_TYPE_NON_HTTPS, HIT_TYPE_PERFORMANCE_1, HIT_TYPE_RES_KEY_PASSWORD, HIT_TYPE_RES_KEY_SECURE, HIT_TYPE_RES_KEY_USERINFO, HIT_TYPE_RES_KEY_VCODE, HIT_TYPE_RES_TIME_TOO_LONG, HIT_TYPE_RES_VALUE_BANKCARD, HIT_TYPE_RES_VALUE_BODY_TOO_LARGE, HIT_TYPE_RES_VALUE_EMAIL, HIT_TYPE_RES_VALUE_ID, HIT_TYPE_RES_VALUE_PHONE, HIT_TYPE_RES_VALUE_VCODE, HIT_TYPE_SAME_SITE, UNIQUE_INJECT_ID } from '../biz/common'
+import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_LOAD_ALL_DATA, CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, CONTENT_MSG_BIZ_SAVE_CONFIG, HIT_TYPE_CROSS_SITE, HIT_TYPE_DELETE_WITHOUT_PARAM, HIT_TYPE_DELETE_WITH_GET, HIT_TYPE_FREQUENCE, HIT_TYPE_HTTP_ONLY, HIT_TYPE_MAX_PAGE_SIZE, HIT_TYPE_NON_HTTPS, HIT_TYPE_PERFORMANCE_1, HIT_TYPE_RES_KEY_PASSWORD, HIT_TYPE_RES_KEY_SECURE, HIT_TYPE_RES_KEY_USERINFO, HIT_TYPE_RES_KEY_VCODE, HIT_TYPE_RES_TIME_TOO_LONG, HIT_TYPE_RES_VALUE_BANKCARD, HIT_TYPE_RES_VALUE_BODY_TOO_LARGE, HIT_TYPE_RES_VALUE_EMAIL, HIT_TYPE_RES_VALUE_ID, HIT_TYPE_RES_VALUE_PHONE, HIT_TYPE_RES_VALUE_VCODE, HIT_TYPE_SAME_SITE, UNIQUE_INJECT_ID } from '../biz/common'
 
 /**
  * 插件支持配置多个contentjs脚本，可以在文档加载之前就注入一段脚本，对xmlHttpRequest类进行覆盖重构
@@ -126,6 +126,7 @@ export default {
       }
     })
     this.getPluginConfig()
+    this.getDetectedData()
     // 由于injectjs拦截到数据后，是不能对拦截到的数据内容直接传输到插件中心，所以只能在特定dom元素上进行数据存储
     // 然后由content脚本定时去获取该内容(太土)
     // 可以尝试contentjs轮询localstorage（不行）
@@ -184,6 +185,12 @@ export default {
     },
     getDetectedData () {
       // 初次加载是获取已经匹配检测到的数据信息
+      console.log('获取初始数据')
+      message.sendMsgToBackground(CONTENT_MSG_BIZ_LOAD_ALL_DATA)
+        .then(list => {
+          console.log('初始数据：', list)
+          this.collectedData = list
+        })
     },
     startInputNodeListen () {
       const inputNode = util.scanOnePasswordInput()

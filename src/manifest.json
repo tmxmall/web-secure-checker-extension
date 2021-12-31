@@ -42,6 +42,7 @@
     "http://*/*",
     "https://*/*",
     "storage",
+    "unlimitedStorage",
     "tabs",
     "webRequest",
     "webRequestBlocking",
