@@ -8,27 +8,50 @@
         <el-button type="primary" size="mini" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
-    <div class="table-pagination" style="text-align: right; margin: 30px;">
-      <el-pagination background :current-page.sync="currentPage" :page-size.sync="pageSize" :page-sizes="[10, 50, 100, 200]" layout="prev, pager, next, sizes, jumper" :total="data.length"></el-pagination>
-    </div>
-    <el-table :data="currentPageViewList" border fit size="mini">
-      <el-table-column type="index"></el-table-column>
-      <el-table-column label="记录时间" prop="createDate" width="140px"></el-table-column>
-      <el-table-column label="method" prop="method" width="60px"></el-table-column>
-      <el-table-column label="URL" prop="url" width="400px"></el-table-column>
-      <el-table-column label="耗时(ms)" prop="timeUsed"></el-table-column>
-      <el-table-column label="响应码" prop="statusCode"></el-table-column>
-      <el-table-column label="响应码" prop="statusCode"></el-table-column>
-      <el-table-column label="响应码" prop="statusCode"></el-table-column>
-      <el-table-column label="响应码" prop="statusCode"></el-table-column>
-    </el-table>
-    <div class="table-pagination" style="text-align: right; margin: 30px;">
-      <el-pagination background :current-page.sync="currentPage" :page-size.sync="pageSize" :page-sizes="[10, 50, 100, 200]" layout="prev, pager, next, sizes, jumper" :total="data.length"></el-pagination>
-    </div>
+    <el-tabs type="border-card">
+      <el-tab-pane label="访问记录">
+        <div class="table-pagination" style="text-align: right; margin: 30px;">
+          <el-pagination background :current-page.sync="currentPage" :page-size.sync="pageSize" :page-sizes="[10, 50, 100, 200]" layout="prev, pager, next, sizes, jumper" :total="data.length"></el-pagination>
+        </div>
+        <el-table :data="currentPageViewList" border fit size="mini">
+          <el-table-column type="index"></el-table-column>
+          <el-table-column label="记录时间" prop="createDate" width="140px"></el-table-column>
+          <el-table-column label="method" prop="method" width="80px"></el-table-column>
+          <el-table-column label="URL" prop="url" width="400px"></el-table-column>
+          <el-table-column label="耗时(ms)" prop="timeUsed"></el-table-column>
+          <el-table-column label="响应码" prop="statusCode"></el-table-column>
+          <el-table-column label="响应码" prop="statusCode"></el-table-column>
+          <el-table-column label="响应码" prop="statusCode"></el-table-column>
+          <el-table-column label="响应码" prop="statusCode"></el-table-column>
+        </el-table>
+        <div class="table-pagination" style="text-align: right; margin: 30px;">
+          <el-pagination background :current-page.sync="currentPage" :page-size.sync="pageSize" :page-sizes="[10, 20, 50, 100, 200]" layout="prev, pager, next, sizes, jumper" :total="data.length"></el-pagination>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="API统计">
+        <el-table :data="uniqueApis" border fit size="mini">
+          <el-table-column type="index"></el-table-column>
+          <el-table-column label="API" prop="api" width="240px"></el-table-column>
+          <el-table-column label="命中规则" prop="hitTypes">
+            <template slot-scope="scope">
+              <el-tag v-for="(hitType, index) in scope.row.hitTypes" :key="index" class="type-item">{{ getHitTypeLabel(hitType) }}</el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="规则统计">
+        <!-- <el-table :data="uniqueApis" border fit size="mini">
+          <el-table-column type="index"></el-table-column>
+          <el-table-column label="API" prop="api" width="240px"></el-table-column>
+          <el-table-column label="命中次数" prop="count" width="60px"></el-table-column>
+        </el-table> -->
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>import localdb from "../biz/db"
+import rule from "../biz/rule"
 import util from "../biz/util"
 
 export default {
@@ -37,7 +60,7 @@ export default {
       config: {},
       data: [],
       currentSite: '',
-      pageSize: 50,
+      pageSize: 20,
       currentPage: 1,
     }
   },
@@ -54,8 +77,22 @@ export default {
       const end = start + this.pageSize
       return this.data.slice(start, end)
     },
+    uniqueApis () {
+      const map = {}
+      const apis = new Set()
+      this.data.forEach(record => {
+        const url = new URL(record.url)
+        const api = url.pathname
+        map[api] = (map[api] || []).concat(record.hitTypes)
+        apis.add(api)
+      })
+      return Array.from(apis).map(api => ({api, hitTypes: Array.from(new Set(map[api]))}))
+    }
   },
   methods: {
+    getHitTypeLabel (hitType) {
+      return rule.allRulesWithLabel()[hitType] || `识别错误${hitType}`
+    },
     query () {
       const site = this.sites.find(s => s.id === this.currentSite)
       this.data = []
@@ -81,6 +118,8 @@ export default {
         this.query()
       }
     })
+    console.log(rule.allRulesWithLabel())
+    // 每次访问这个页面的时候，就主动聚合统计一次，对api进行统计去重
     setTimeout(() => {
       // window.location.reload()
     }, 20 * 1000)
@@ -93,5 +132,8 @@ export default {
   min-height: 200px;
   min-width: 400px;
   height: 100%;
+  .type-item {
+    margin: 4px;
+  }
 }
 </style>
