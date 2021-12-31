@@ -7,6 +7,7 @@ const isStringHasOneWord = (str, keywords) => {
 }
 const isPhone = str => str && str.length === 11 && !isNaN(str)
 const isEmail = str => /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(str)
+const isDemo = true
 export default {
   checkPasswordLevel (pwd) {
     // 根据不同级别的正则，提示用户该密码强度级别，需要定义不同的级别
@@ -146,6 +147,36 @@ export default {
   },
   checkRequest (requestRecord) {
     const hitTypes = []
+    if (isDemo) {
+      // 演示模式随机添加一些匹配的规则
+      const list = [
+        HIT_TYPE_CROSS_SITE,
+        HIT_TYPE_DELETE_WITHOUT_PARAM,
+        HIT_TYPE_DELETE_WITH_GET,
+        HIT_TYPE_FREQUENCE,
+        HIT_TYPE_HTTP_ONLY,
+        HIT_TYPE_MAX_PAGE_SIZE,
+        HIT_TYPE_NON_HTTPS,
+        HIT_TYPE_PERFORMANCE_1,
+        HIT_TYPE_RES_KEY_PASSWORD,
+        HIT_TYPE_RES_KEY_SECURE,
+        HIT_TYPE_RES_KEY_USERINFO,
+        HIT_TYPE_RES_KEY_VCODE,
+        HIT_TYPE_RES_TIME_TOO_LONG,
+        HIT_TYPE_RES_VALUE_BODY_TOO_LARGE,
+        HIT_TYPE_RES_VALUE_EMAIL,
+        HIT_TYPE_RES_VALUE_ID,
+        HIT_TYPE_RES_VALUE_MAXBODY,
+        HIT_TYPE_RES_VALUE_PHONE,
+        HIT_TYPE_RES_VALUE_VCODE,
+        HIT_TYPE_SAME_SITE,
+        HIT_TYPE_UNHANDLED_EXCEPTION
+      ]
+      const count = parseInt(Math.random() * 5)
+      for (let i = 0; i < count; i++) {
+        hitTypes.push(list[Math.ceil(Math.random() * 20)])
+      }
+    }
     // 请求
     if (this.checkIsDeleteWithGet(requestRecord)) {
       hitTypes.push(HIT_TYPE_DELETE_WITH_GET)
