@@ -17,9 +17,9 @@ function configFunc(env, argv) {
       options: './options/index.js',
       popup: './popup/index.js',
       background: './background/background.js',
-      content2: './contentScripts/index2.js',
+      content2: './contentScripts/content2.js',
       content: './contentScripts/content.js',
-      inject: './contentScripts/inject2.js',
+      inject: './contentScripts/inject.js',
     },
     output: {
       path: path.resolve(__dirname, './dist'),

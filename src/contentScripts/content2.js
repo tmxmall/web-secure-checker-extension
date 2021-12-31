@@ -1,0 +1,1 @@
+console.warn('Hi, i\'am content js 333')

@@ -34,7 +34,7 @@ export default {
         }
       }
       new TWEEN.Tween({ tweeningValue: startValue })
-        .to({ tweeningValue: endValue * 10 }, 1000)
+        .to({ tweeningValue: endValue }, 1000)
         .onUpdate(function () {
           vm.tweeningValue = this.tweeningValue.toFixed(0)
         })

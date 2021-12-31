@@ -1,3 +1,5 @@
+/* eslint-disable */
+console.log('hi im content js')
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 // 但是这个样式会影响到主体页面，需要增加范围

@@ -6,13 +6,13 @@
         <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>
       <el-form-item label="屏显数据周期:">
-        <el-select v-model="config.showDataRange" size="mini">
-          <el-option :label="1" :value="1">1小时</el-option>
-          <el-option :label="3">3小时</el-option>
-          <el-option :label="8">8小时</el-option>
-          <el-option :label="24">24小时</el-option>
-          <el-option :label="72">3天</el-option>
-          <el-option :label="168" :value="168">7天</el-option>
+        <el-select v-model="config.showDataRangeDays" size="mini">
+          <el-option :value="1">1小时</el-option>
+          <el-option :value="3">3小时</el-option>
+          <el-option :value="8">8小时</el-option>
+          <el-option :value="24">24小时</el-option>
+          <el-option :value="72">3天</el-option>
+          <el-option :value="168">7天</el-option>
         </el-select>
         <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>

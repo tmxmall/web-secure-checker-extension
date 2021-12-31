@@ -72,7 +72,7 @@ const localdb = {
       .where('createDate')
       .between(dateStartStr, dateEndStr)
       .toArray(items => {
-        return items
+        return items.filter(i => i.initiator === siteHost)
       })
   },
   count() {

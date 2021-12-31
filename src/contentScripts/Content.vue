@@ -1,8 +1,8 @@
 <template>
-  <div v-if="config && config.enabled" class="extension-context" :class="[fold ? 'fold' : '', 'level-' + passWordLevel]">
+  <div v-if="isSiteEnabled" class="extension-context" :class="[fold ? 'fold' : '', 'level-' + passWordLevel]">
     <!-- 由于本组件是content注入模式，该组件内的事件响应会失效，需要借用inject模式注入组件 -->
     <!-- https://www.bookstack.cn/read/chrome-plugin-develop/spilt.6.spilt.4.8bdb1aac68bbdc44.md -->
-    <span class="fold-toggle" @click="toggle">
+    <span class="fold-toggle" :class="{even: changeCount % 5 == 0}" @click="toggle">
       {{ fold ? '展开':'收起' }}
     </span>
     <div class="checked-result-range" :class="{fold}">
@@ -47,8 +47,8 @@ import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_LOAD_ALL_DATA, CONTENT_MSG_
  *  对send方法尽心重写，实现将所有数据参数发送到background
  *  对responseText响应进行拦截并将数据发送到background
  */
-const isPwdEnabled = config => config && config.enabled && config.pwdCheckEnabeld
-const isEnabled = config => config && config.enabled
+const isEnabled = config => config && config.enabled && config.sites && config.sites.length && config.sites.find(i => i.site === window.location.origin)
+const isPwdEnabled = config => isEnabled(config) && config.pwdCheckEnabeld
 const kind1Types = [
   HIT_TYPE_DELETE_WITH_GET,
   HIT_TYPE_DELETE_WITHOUT_PARAM,
@@ -91,11 +91,13 @@ export default {
       // 最后分析目标周期内的数据进行分类统计，将统计结果进行展示到结果区
       // 对分类后的统计结果进行分别级别计算显示不一样的颜色样式
       // 需要监听消息，对新命中的规则的记录数据获取并添加到数组
-      collectedData: []
+      collectedData: [],
+      changeCount: 1
     }
   },
   computed: {
     // 其他五大类数据统计
+    isSiteEnabled () { return isEnabled(this.config) },
     requestCount () { return this.collectedData.filter(item => item.hitTypes.find(type => kind1Types.includes(type))).length },
     responseCount () { return this.collectedData.filter(item => item.hitTypes.find(type => kind2Types.includes(type))).length },
     crossSiteCount () { return this.collectedData.filter(item => item.hitTypes.find(type => kind3Types.includes(type))).length },
@@ -161,7 +163,18 @@ export default {
       const s = document.createElement('script')
       s.src = chrome.extension.getURL('inject.js')
       s.onload = () => { s.remove() }
-      (document.head || document.documentElement).appendChild(s)
+      let headNode = document.head || document.documentElement
+      if (headNode) {
+        headNode.appendChild(s)
+      } else {
+        const timer = setInterval(() => {
+          headNode = document.head || document.documentElement
+          if (headNode) {
+            headNode.appendChild(s)
+            clearInterval(timer)
+          }
+        }, 10)
+      }
     },
     destoryWhenDisable () {
       // 卸载取消监听事件
@@ -185,10 +198,8 @@ export default {
     },
     getDetectedData () {
       // 初次加载是获取已经匹配检测到的数据信息
-      console.log('获取初始数据')
       message.sendMsgToBackground(CONTENT_MSG_BIZ_LOAD_ALL_DATA)
         .then(list => {
-          console.log('初始数据：', list)
           this.collectedData = list
         })
     },
@@ -209,9 +220,11 @@ export default {
     toggle () {
       this.fold = !this.fold
     },
+    // eslint-disable-next-line
     notify (newDetectedRequestRecord) {
-      console.log('命中新数据', newDetectedRequestRecord)
-      // 执行动画效果，对某一类型的数据的命中个数统计进行增加
+      this.changeCount++
+      // console.log('命中新数据', newDetectedRequestRecord)
+      // TODO: 如何让图标闪烁
     }
   }
 }
@@ -247,6 +260,7 @@ export default {
     color: red;
     text-align: center;
     line-height: 30px;
+    transition: all .5s;
   }
   .checked-result-range {
     transition: all 3s;
