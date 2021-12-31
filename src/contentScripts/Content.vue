@@ -13,23 +13,23 @@
       <!-- 其他五六类的统计结果展示 -->
       <el-alert type="warning" :show-icon="false" :closable="false">存在安全隐患的API数量统计：</el-alert>
       <div v-if="config.requestDataCheckEnabeld" class="cate-item">
-        <span class="label">请求安全： </span>
+        <span class="text-label">请求安全： </span>
         <animation-number :value="requestCount" class="count-number"></animation-number>
       </div>
       <div v-if="config.responseDataCheckEnabeld" class="cate-item">
-        <span class="label">敏感数据： </span>
+        <span class="text-label">敏感数据： </span>
         <animation-number :value="responseCount" class="count-number"></animation-number>
       </div>
       <div v-if="config.crossSiteCheckEnabeld" class="cate-item">
-        <span class="label">跨域访问： </span>
+        <span class="text-label">跨域访问： </span>
         <animation-number :value="crossSiteCount" class="count-number"></animation-number>
       </div>
       <div v-if="config.siteCheckEnabeld" class="cate-item">
-        <span class="label">站点安全： </span>
+        <span class="text-label">站点安全： </span>
         <animation-number :value="siteSecureCount" class="count-number"></animation-number>
       </div>
       <div v-if="config.performanceCheckEnabeld" class="cate-item">
-        <span class="label">加载性能： </span>
+        <span class="text-label">加载性能： </span>
         <animation-number :value="performanceCount" class="count-number"></animation-number>
       </div>
     </div>
@@ -232,7 +232,7 @@ export default {
 <style lang="scss" scoped>
 .extension-context {
   position: fixed;
-  z-index: 999;
+  z-index: 99999;
   right: 10px;
   top: 10px;
   width: 300px;
@@ -242,6 +242,7 @@ export default {
   // opacity: 0.5;
   transition: all .5s;
   background: white;
+  color: #333;
   &.fold {
     width: 30px;
     height: 30px;
@@ -266,7 +267,7 @@ export default {
     transition: all 3s;
     min-width: 200px;
     overflow: hidden;
-    margin-top: 8px;
+    margin-top: 30px;
     &.fold {
       height: 0;
     }
@@ -274,7 +275,7 @@ export default {
   .cate-item {
     padding: 10px;
     line-height: 30px;
-    .label {
+    .text-label {
       display: inline-block;
       vertical-align: middle;
     }
