@@ -30,7 +30,7 @@ const { UNIQUE_INJECT_ID } = require("../biz/common")
 
   XHR.send = function (postData) {
     // 如何自定义一个全局唯一的uniqueId
-    const customUniqueRequestId = new Date().getTime()
+    const customUniqueRequestId = (new Date().getTime()) + ''
     this.setRequestHeader('customUniqueRequestId', customUniqueRequestId)
     const startTime = new Date().getTime()
     this.addEventListener('load', function() {

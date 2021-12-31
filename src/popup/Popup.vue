@@ -7,18 +7,18 @@
       </el-form-item>
       <el-form-item label="屏显数据周期:">
         <el-select v-model="config.showDataRange" size="mini">
-          <el-option :label="1">1小时</el-option>
+          <el-option :label="1" :value="1">1小时</el-option>
           <el-option :label="3">3小时</el-option>
           <el-option :label="8">8小时</el-option>
           <el-option :label="24">24小时</el-option>
           <el-option :label="72">3天</el-option>
-          <el-option :label="168">7天</el-option>
+          <el-option :label="168" :value="168">7天</el-option>
         </el-select>
         <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>
       <!-- 仅对配置的网址有效，后期可实现正则 -->
       <el-form-item label="网址:">
-        <div style="display: inline-block;width: 300px;" :key="config.sites.length">
+        <div style="display: inline-block;" :key="config.sites.length">
           <i v-if="!config.sites.length" class="icon el-icon-plus" @click="addNewOne"></i>
           <div v-for="(site, index) in config.sites" :key="site.id">
             <el-input v-model="site.site" size="mini" style="width: 200px;" @change="change"></el-input>

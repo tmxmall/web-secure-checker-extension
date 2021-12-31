@@ -14,12 +14,6 @@
     },
     {
       "all_frames": false,
-      "js": ["./contentScripts.js"],
-      "matches": ["http://*.tmxmall2.com/*", "https://*.tmxmall2.com/*"],
-      "run_at": "document_end"
-    },
-    {
-      "all_frames": false,
       "js": ["./content.js"],
       "matches": ["http://*.tmxmall.com/*", "https://*.tmxmall.com/*"],
       "run_at": "document_end"

@@ -66,7 +66,12 @@ export const sendMsgToTab = (msg, msgId, bizType, tabId)  => {
         tabs.forEach(tab => {
           // 每个页面都会收到消息
           // TODO: 需要定制一个32位的唯一id保证相关组件只处理自己扩展收到的消息
-          chrome.tabs.sendMessage(tab.id, {body: msg, biz: bizType, msgId, type: CONTENT_MSG_TYPE})
+          chrome.tabs.sendMessage(tab.id, {body: msg, biz: bizType, msgId, type: CONTENT_MSG_TYPE}, responseMsg => {
+            if (!isResolved) {
+              resolve(responseMsg)
+            }
+            isResolved = true
+          })
         })
       })
     }

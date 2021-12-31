@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
     const bizType = msg.biz
     const { body } = msg
     if (bizType) {
-      console.log(bizType, body)
+      // console.log(bizType, body)
     }
     if (bizType === CONTENT_MSG_BIZ_GET_CONFIG) {
       // 客户端content处理获取插件配置信息
@@ -58,7 +58,12 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       // 所以此处是完全可以使用requestRecord信息的
       // 需通过customUniqueRequestId进行记录匹配识别
       // 对body进行分析并入库
-      console.log(bizType)
+      const requestRecord = globalRequestRecordCacheList.find(i => i.customUniqueRequestId === body.customUniqueRequestId)
+      if (!requestRecord) {
+        return
+      }
+      Object.assign(body, requestRecord.content)
+      console.log(body)
       return
     }
     // send msg back(为了确保回复消息可能有偶异步或同步，所以不用sendResponse进行回复，统一使用向指定tab发送消息)
@@ -81,7 +86,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     // console.log(details)
     // 仅处理ajax异步请求
     if (type === 'xmlhttprequest') {
-      console.log(details)
       const headerMap = transformHeaderList2Map(details.requestHeaders)
       if (!headerMap.customUniqueRequestId) {
         return
@@ -100,11 +104,12 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 )
 
 chrome.webRequest.onHeadersReceived.addListener(details => {
-  const {type, tabId, requestId, initiator} = details
+  const {type, tabId, requestId, initiator, url, statusCode, statusLine, timeStamp} = details
   if (!checkRequestSiteEnabled(initiator)) {
     return
   }
   if (type === 'xmlhttprequest') {
+    // console.log(details)
     const relatedRequestInfo = globalRequestCacheList.find(i => i.id === `${tabId}-${requestId}`)
     if (!relatedRequestInfo) {
       return
@@ -113,11 +118,16 @@ chrome.webRequest.onHeadersReceived.addListener(details => {
     // 定义一个完整的请求和响应数据
     const requestRecord = {
       customUniqueRequestId: relatedRequestInfo.content.customUniqueRequestId,
+      initiator,
+      url,
+      statusCode,
+      statusLine,
+      timeStamp,
       reqHeaders: relatedRequestInfo.content,
-      resHeaders: headerMap
+      resHeaders: headerMap,
     }
-    console.warn('requestRecord', requestRecord)
-    globalRequestRecordCacheList.unshift({id: requestRecord.customUniqueRequestId, content: requestRecord})
+    // console.warn('requestRecord', requestRecord)
+    globalRequestRecordCacheList.unshift({customUniqueRequestId: requestRecord.customUniqueRequestId, content: requestRecord})
     globalRequestRecordCacheList.splice(500, 2)
   }
 },
