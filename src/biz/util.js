@@ -42,5 +42,49 @@ export default {
         resolve(JSON.parse(JSON.stringify(items.plugin_config)))
       })
     })
+  },
+  travalsJson (data, fieldHandler, valueHandler) {
+    for (const key in data) {
+      // eslint-disable-next-line
+      if (data.hasOwnProperty(key)) {
+        // eslint-disable-next-line
+        fieldHandler && fieldHandler(key)
+        const value = data[key]
+        if (typeof value === 'object') {
+          this.travalsJson(value, fieldHandler, valueHandler)
+        } else {
+          // eslint-disable-next-line
+          valueHandler && valueHandler(value)
+        }
+      }
+    }
+  },
+  travalsJsonValue (data, valueHandler) {
+    for (const key in data) {
+      // eslint-disable-next-line
+      if (data.hasOwnProperty(key)) {
+        // eslint-disable-next-line
+        const value = data[key]
+        if (typeof value === 'object') {
+          this.travalsJson(value, valueHandler)
+        } else {
+          // eslint-disable-next-line
+          valueHandler && valueHandler(value)
+        }
+      }
+    }
+  },
+  travalsJsonField (data, fieldHandler) {
+    for (const key in data) {
+      // eslint-disable-next-line
+      if (data.hasOwnProperty(key)) {
+        // eslint-disable-next-line
+        fieldHandler && fieldHandler(key)
+        const value = data[key]
+        if (typeof value === 'object') {
+          this.travalsJson(value, fieldHandler)
+        }
+      }
+    }
   }
 }
