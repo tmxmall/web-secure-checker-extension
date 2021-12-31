@@ -43,6 +43,7 @@
     "chrome_style": false,
     "page": "./options.html"
   },
+  "web_accessible_resources": ["inject.js"],
   "permissions": [
     "http://*/*",
     "https://*/*",

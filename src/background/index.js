@@ -54,7 +54,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     console.log('before request')
     console.log({details})
   },
-  {urls: ["<all_urls>"]} // TODO: match the configured urls
+  {urls: ["<all_urls>"]}, // TODO: match the configured urls
 )
 chrome.webRequest.onCompleted.addListener(
   e => {

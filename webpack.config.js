@@ -20,6 +20,7 @@ function configFunc(env, argv) {
       contentScripts: './contentScripts/index.js',
       contentScripts2: './contentScripts/index2.js',
       content: './contentScripts/content.js',
+      inject: './contentScripts/inject2.js',
     },
     output: {
       path: path.resolve(__dirname, './dist'),
@@ -86,7 +87,7 @@ function configFunc(env, argv) {
       new CopyWebpackPlugin({
         patterns: [
           { from: 'assets', to: 'assets' },
-          { from: 'manifest.json', to: 'manifest.json', flatten: true },
+          { from: 'manifest.json', to: 'manifest.json', flatten: true }
         ],
       }),
       new HtmlWebpackPlugin({
