@@ -21,6 +21,7 @@
     "import/prefer-default-export": "off",
     "vue/max-attributes-per-line": "off",
     "vue/html-self-closing": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-plusplus": "off"
   }
 }

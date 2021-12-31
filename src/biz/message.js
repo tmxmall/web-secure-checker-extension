@@ -6,8 +6,16 @@ import { CONTENT_MSG_TYPE, MSG_ID_SEED } from "./common"
  */
 const msgWaitMap = {}
 
-const genMsgId = () => { return MSG_ID_SEED + 1 }
+let count = 1
+const genMsgId = () => { return MSG_ID_SEED + (count++) }
 
+/**
+ * contentjs初始化消息监听通道时，对接收其他页面发起的通知
+ * 同时对content自己主动发起的消息，根据msgId进行回执(一定会回执，因为一定有msgId)
+ * 所以前端content中，自己发的消息的对应的结果，必须自己粗粒
+ * 仅外部popup,options,background主动推送的消息会派送到listener
+ * @param {通知回调函数} listener 
+ */
 export const initMsg = (listener) => {
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse('ok')
@@ -23,6 +31,7 @@ export const initMsg = (listener) => {
       if (resolver) {
         // 处理回调并结束流程
         // 清空回调函数
+        // console.log('找到resolver', body, msgId)
         resolver(body)
         msgWaitMap[msgId] = null
         return
@@ -31,6 +40,7 @@ export const initMsg = (listener) => {
     // 没有msgId或resolver的消息继续走以下流程
     if (listener && body) {
       // 如果有注册回调，则通知调用
+      // console.log('初始化回调通知', body)
       listener(biz, body)
     }
     // 没有回调的页面，不需要通知
@@ -49,7 +59,6 @@ export const sendMsgToBackground = (bizType, msg) => {
 
 // 仅background使用(popup也可以使用)
 export const sendMsgToTab = (msg, msgId, bizType, tabId)  => {
-  console.log('send msg to tab')
   let isResolved = false
   return new Promise((resolve, reject) => {
     // 如果有tabId，则定向发送

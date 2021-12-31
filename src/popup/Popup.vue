@@ -48,12 +48,11 @@
       <el-form-item label="跨域访问:">
         <el-switch v-model="config.crossSiteCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
-      <!-- 检查cookie是否设置合理 -->
-      <el-form-item label="加载性能:">
-        <el-switch v-model="config.performanceCheckEnabeld" @change="change"></el-switch> 启用
-      </el-form-item>
       <el-form-item label="站点安全:">
         <el-switch v-model="config.siteCheckEnabeld" @change="change"></el-switch> 启用
+      </el-form-item>
+      <el-form-item label="加载性能:">
+        <el-switch v-model="config.performanceCheckEnabeld" @change="change"></el-switch> 启用
       </el-form-item>
     </el-form>
     <el-button type="primary" size="small" @click="gotoOptions">查看统计</el-button>

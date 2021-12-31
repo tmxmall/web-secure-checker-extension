@@ -85,7 +85,7 @@ const { UNIQUE_INJECT_ID } = require("../biz/common")
               msg: {
                 url: this._url,
                 method: this._method,
-                time: endTime - startTime,
+                timeUsed: endTime - startTime,
                 // reqHeaders: this._requestHeaders,
                 // resHeaders: resHeaders,
                 reqBody: this._requestBody,
