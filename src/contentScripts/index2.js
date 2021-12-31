@@ -1,2 +1,1 @@
-console.warn('Hi, index 2')
-
+console.warn('Hi, i\'am content js 2')

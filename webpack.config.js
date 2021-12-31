@@ -16,9 +16,8 @@ function configFunc(env, argv) {
     entry: {
       options: './options/index.js',
       popup: './popup/index.js',
-      background: './background/index.js',
-      contentScripts: './contentScripts/index.js',
-      contentScripts2: './contentScripts/index2.js',
+      background: './background/background.js',
+      content2: './contentScripts/index2.js',
       content: './contentScripts/content.js',
       inject: './contentScripts/inject2.js',
     },

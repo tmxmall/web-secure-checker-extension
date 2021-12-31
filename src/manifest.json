@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "all_frames": false,
-      "js": ["./contentScripts2.js"],
+      "js": ["./content2.js"],
       "matches": ["http://*/*", "https://*/*"],
       "run_at": "document_end"
     },

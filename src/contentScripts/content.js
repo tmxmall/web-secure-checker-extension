@@ -9,7 +9,6 @@ Vue.use(ElementUI)
 
 const node = util.ensureTipNode()
 node.classList.add('extension-context')
-console.log(node)
 
 // eslint-disable-next-line
 new Vue({
@@ -18,17 +17,3 @@ new Vue({
 })
 // const appInstance = app.$mount()
 // node.appendChild(appInstance.$el)
-
-
-// 注入一个inject.js
-
-/**
- * code in inject.js
- * added "web_accessible_resources": ["injected.js"] to manifest.json
- */
-const s = document.createElement('script')
-s.src = chrome.extension.getURL('inject.js')
-s.onload = () => {
-  s.remove()
-}
-(document.head || document.documentElement).appendChild(s)

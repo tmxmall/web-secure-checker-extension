@@ -17,7 +17,7 @@
 <script>
 import util from '../biz/util'
 import * as message from '../biz/message'
-import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_MSG_BIZ_SAVE_CONFIG, UNIQUE_INJECT_ID } from '../biz/common'
+import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, CONTENT_MSG_BIZ_SAVE_CONFIG, UNIQUE_INJECT_ID } from '../biz/common'
 
 /**
  * 插件支持配置多个contentjs脚本，可以在文档加载之前就注入一段脚本，对xmlHttpRequest类进行覆盖重构
@@ -26,6 +26,8 @@ import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_NEW_DATA_DETECTED, CONTENT_
  *  对send方法尽心重写，实现将所有数据参数发送到background
  *  对responseText响应进行拦截并将数据发送到background
  */
+const isPwdEnabled = config => config && config.enabled && config.pwdCheckEnabeld
+const isEnabled = config => config && config.enabled
 
 export default {
   data () {
@@ -55,8 +57,20 @@ export default {
     message.initMsg((bizType, msg) => {
       if (bizType === CONTENT_MSG_BIZ_SAVE_CONFIG) {
         // 插件配置有更新
-        console.log(msg)
-        this.config = msg // config更新后如果enabled从关闭到打开，需要进行初始化
+        const oldConfig = this.config
+        this.config = msg
+        // config更新后如果enabled从关闭到打开，需要进行初始化
+        // 1. 开启到关闭,还要考虑
+        if (isPwdEnabled(oldConfig) && !isPwdEnabled(this.config)) {
+          this.endInputNodeListen()
+        }
+        // 2. 关闭到开启
+        if (!isPwdEnabled(oldConfig) && isPwdEnabled(this.config)) {
+          this.startInputNodeListen()
+        }
+        if (!isEnabled(oldConfig) && isEnabled(this.config)) {
+          this.initWhenEnable()
+        }
       } else if (bizType === CONTENT_MSG_BIZ_NEW_DATA_DETECTED) {
         this.collectedData.push(msg)
       }
@@ -67,11 +81,12 @@ export default {
         this.config = config
         // 如果插件开启则渲染显示
         if (config && config.enabled) {
-          // TODO: match location.host
-          console.warn('插件已开启')
-          this.listenInputNode()
+          this.initWhenEnable()
+          if (config.pwdCheckEnabeld) {
+            this.startInputNodeListen()
+          }
         } else {
-          // TODO: 需要注销卸载此节点，没啥用了
+          // TODO: 需要注销卸载此节点，没啥用了（暂时不卸载，因为config可以能再次变化回来）
         }
       })
     // 由于injectjs拦截到数据后，是不能对拦截到的数据内容直接传输到插件中心，所以只能在特定dom元素上进行数据存储
@@ -79,17 +94,30 @@ export default {
     // 可以尝试contentjs轮询localstorage（不行）
     // postMessage监听injectjs发送的消息内容
     window.addEventListener('message', event => {
+      if (!isEnabled(this.config)) { // 插件为启用，无需处理监听数据
+        return
+      }
       const data = event.data || {}
       // 表明是来自自己的injectjs发送的内容
       if (data.from === UNIQUE_INJECT_ID) {
-        // 将数据存库并添加data
-        this.collectedData.push(data.msg)
+        // 将数据推送至background处理分析
+        message.sendMsgToBackground(CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, data.msg)
       }
     })
   },
   methods: {
     initWhenEnable () {
       // 初始化绑定监听事件
+      // 注入一个inject.js
+      /**
+       * code in inject.js
+       * added "web_accessible_resources": ["injected.js"] to manifest.json
+       * 一旦注入了，就没办法取消了
+       */
+      const s = document.createElement('script')
+      s.src = chrome.extension.getURL('inject.js')
+      s.onload = () => { s.remove() }
+      (document.head || document.documentElement).appendChild(s)
     },
     destoryWhenDisable () {
       // 卸载取消监听事件
@@ -100,7 +128,7 @@ export default {
     getDetectedData () {
       // 初次加载是获取已经匹配检测到的数据信息
     },
-    listenInputNode () {
+    startInputNodeListen () {
       const inputNode = util.scanOnePasswordInput()
       this.hasPasswordInput = !!inputNode
       if (inputNode) {
@@ -110,6 +138,9 @@ export default {
           this.passWordLevel = level
         })
       }
+    },
+    endInputNodeListen () {
+
     },
     toggle () {
       this.fold = !this.fold
