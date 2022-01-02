@@ -17,7 +17,6 @@ function configFunc(env, argv) {
       options: './options/index.js',
       popup: './popup/index.js',
       background: './background/background.js',
-      content2: './contentScripts/content2.js',
       content: './contentScripts/content.js',
       inject: './contentScripts/inject.js',
     },
@@ -111,11 +110,11 @@ function configFunc(env, argv) {
     config.plugins.push(
       new webpack.HotModuleReplacementPlugin(),
       new ExtensionReloader({
+        reloadPage: true,
         entries: {
           contentScript: 'content',
           background: 'background',
-          extensionPage: 'popup',
-          options: 'options',
+          extensionPage: ['popup', 'options'], // 插件其他页面的热加载
         },
       })
     )
