@@ -6,7 +6,7 @@
         <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>
       <el-form-item label="数据统计:">
-        <el-select v-model="config.showDataRangeDays" size="mini" @change="change">
+        <el-select v-model="config.showDataRangeHours" size="mini" @change="change">
           <el-option :value="1" label="1小时内"></el-option>
           <el-option :value="3" label="3小时内"></el-option>
           <el-option :value="8" label="8小时内"></el-option>
@@ -94,6 +94,7 @@ export default {
       this.saveConfig()
     },
     saveConfig () {
+      this.$emit('config-update', this.config)
       message.sendMsgToBackground(CONTENT_MSG_BIZ_SAVE_CONFIG, this.config)
     },
     gotoOptions () {

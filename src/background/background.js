@@ -75,7 +75,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
     }
     if (bizType === CONTENT_MSG_BIZ_LOAD_ALL_DATA) {
       // 查询数据，这里需要根据当前页面的host匹配只查询对应网站的统计数据
-      localdb.query(sender.origin, pluginConfig.showDataRangeDays || 7).then(records => {
+      localdb.query(sender.origin, pluginConfig.showDataRangeHours || 7).then(records => {
         sendMsgToTab(records, msg.msgId, CONTENT_MSG_BIZ_LOAD_ALL_DATA, sender.tab.id)
       })
       return
