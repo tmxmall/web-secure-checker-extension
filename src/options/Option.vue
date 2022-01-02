@@ -5,9 +5,12 @@
         <el-select v-model="currentSite" size="mini" style="width: 300px;">
           <el-option v-for="(site, index) in sites" :key="index" :label="site.site" :value="site.id" :disabled="!site.enabled"></el-option>
         </el-select>
-        <el-button type="primary" size="mini" @click="query">查询</el-button>
+        <el-button type="primary" size="mini" @click="query">
+          查询
+        </el-button>
       </el-form-item>
     </el-form>
+    <el-alert :closable="false" style="margin-bottom: 10px;">当前网站中的风险网络请求API统计展示</el-alert>
     <el-tabs type="border-card">
       <el-tab-pane label="访问记录">
         <div class="table-pagination" style="text-align: right; margin: 30px;">
@@ -46,15 +49,22 @@
           <el-table-column label="命中次数" prop="count" width="60px"></el-table-column>
         </el-table> -->
       </el-tab-pane>
+      <el-tab-pane label="规则说明"></el-tab-pane>
+      <el-tab-pane label="插件设置">
+        <Popup></Popup>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
-<script>import localdb from "../biz/db"
+<script>
+import localdb from "../biz/db"
 import rule from "../biz/rule"
 import util from "../biz/util"
+import Popup from '../popup/Popup.vue'
 
 export default {
+  components: { Popup },
   data() {
     return {
       config: {},
@@ -97,7 +107,8 @@ export default {
       const site = this.sites.find(s => s.id === this.currentSite)
       this.data = []
       if (site) {
-        localdb.query(site.site, 30)
+        // 根据插件配置查询指定时间的统计数据
+        localdb.query(site.site, this.config.showDataRangeDays)
           .then(records => {
             console.log(records[0])
             this.data = records
@@ -107,22 +118,16 @@ export default {
   },
   created () {
     /**
-     * load all the data
      * load the configuation
      */
     util.getPluginConfig().then(config => {
       console.log('config')
-      this.config = config
+      this.config = config || {}
       if (this.sites.length) {
         this.currentSite = this.sites[0].id
         this.query()
       }
     })
-    console.log(rule.allRulesWithLabel())
-    // 每次访问这个页面的时候，就主动聚合统计一次，对api进行统计去重
-    setTimeout(() => {
-      // window.location.reload()
-    }, 20 * 1000)
   }
 }
 </script>

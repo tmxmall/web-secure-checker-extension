@@ -5,20 +5,19 @@
       <el-form-item label="插件状态:">
         <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>
-      <el-form-item label="屏显数据周期:">
-        <el-select v-model="config.showDataRangeDays" size="mini">
-          <el-option :value="1">1小时</el-option>
-          <el-option :value="3">3小时</el-option>
-          <el-option :value="8">8小时</el-option>
-          <el-option :value="24">24小时</el-option>
-          <el-option :value="72">3天</el-option>
-          <el-option :value="168">7天</el-option>
+      <el-form-item label="数据统计:">
+        <el-select v-model="config.showDataRangeDays" size="mini" @change="change">
+          <el-option :value="1" label="1小时内"></el-option>
+          <el-option :value="3" label="3小时内"></el-option>
+          <el-option :value="8" label="8小时内"></el-option>
+          <el-option :value="24" label="24小时内"></el-option>
+          <el-option :value="72" label="3天内"></el-option>
+          <el-option :value="168" label="7天内"></el-option>
         </el-select>
-        <el-switch v-model="config.enabled" @change="change"></el-switch> 启用
       </el-form-item>
       <!-- 仅对配置的网址有效，后期可实现正则 -->
       <el-form-item label="网址:">
-        <div style="display: inline-block;" :key="config.sites.length">
+        <div :key="config.sites.length" style="display: inline-block;">
           <i v-if="!config.sites.length" class="icon el-icon-plus" @click="addNewOne"></i>
           <div v-for="(site, index) in config.sites" :key="site.id">
             <el-input v-model="site.site" size="mini" style="width: 200px;" @change="change"></el-input>

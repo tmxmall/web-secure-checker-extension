@@ -8,7 +8,7 @@
     <div class="checked-result-range" :class="{fold}">
       <!-- 如果开启了密码强度计算且当前页面有密码输入框 -->
       <div v-if="config.pwdCheckEnabeld && hasPasswordInput" class="cate-item">
-        密码强度：<span :class="'strong-' + passWordLevel">{{ passWordLevel }}</span>
+        密码强度：<span :class="'strong-' + passWordLevel">{{ passWordLevelLabel }}</span>
       </div>
       <!-- 其他五六类的统计结果展示 -->
       <el-alert type="warning" :show-icon="false" :closable="false">存在安全隐患的API数量统计：</el-alert>
@@ -96,8 +96,12 @@ export default {
     }
   },
   computed: {
+    passWordLevelLabel () {
+      return ['-','简单',  '中等', '安全'][this.passWordLevel]
+    },
     // 其他五大类数据统计
     isSiteEnabled () { return isEnabled(this.config) },
+    // 应该去重统计
     requestCount () { return this.collectedData.filter(item => item.hitTypes.find(type => kind1Types.includes(type))).length },
     responseCount () { return this.collectedData.filter(item => item.hitTypes.find(type => kind2Types.includes(type))).length },
     crossSiteCount () { return this.collectedData.filter(item => item.hitTypes.find(type => kind3Types.includes(type))).length },
@@ -283,6 +287,7 @@ export default {
       font-size: 30px;
       vertical-align: middle;
       margin-left: 20px;
+      color: red;
     }
   }
   .strong-0 {

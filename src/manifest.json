@@ -1,4 +1,6 @@
 {
+  "name": "Web Secure Checker",
+  "description": "网站网络请求风险API检查",
   "background": {
     "scripts": ["./background.js"]
   },
@@ -14,7 +16,6 @@
     }
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "description": "Web Secure Check",
   "icons": {
     "116": "assets/icons/icon_16.png",
     "132": "assets/icons/icon_32.png",
@@ -26,7 +27,6 @@
     "128": "assets/icons/dun.png"
   },
   "manifest_version": 2,
-  "name": "web-secure-checker",
   "options_ui": {
     "chrome_style": false,
     "page": "./options.html"

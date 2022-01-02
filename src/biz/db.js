@@ -64,8 +64,8 @@ const localdb = {
     requestRecord.createDate = dayjs().format('YYYY-MM-DD HH:mm:ss')
     return dbInstance.table('request_history').add(requestRecord)
   },
-  query(siteHost, daystoNow = 7) {
-    const dateStartStr = dayjs().subtract(daystoNow, 'day').format('YYYY-MM-DD HH:mm:ss')
+  query(siteHost, hourstoNow = 7) {
+    const dateStartStr = dayjs().subtract(hourstoNow, 'hour').format('YYYY-MM-DD HH:mm:ss')
     const dateEndStr = dayjs().format('YYYY-MM-DD HH:mm:ss')
     return dbInstance
       .table('request_history')
