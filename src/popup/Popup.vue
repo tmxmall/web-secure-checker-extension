@@ -1,5 +1,9 @@
 <template>
   <div class="popup-page">
+    <div class="title">
+      插件设置
+      <span v-if="configSaved" class="saving-text">已保存</span>
+    </div>
     <el-form label-width="80px" label-position="left" size="mini">
       <!-- 是否全局启用 -->
       <el-form-item label="插件状态:">
@@ -73,6 +77,7 @@ const defaultConfig = {
 export default {
   data() {
     return {
+      configSaved: false,
       config: JSON.parse(JSON.stringify(defaultConfig))
     }
   },
@@ -94,6 +99,10 @@ export default {
       this.saveConfig()
     },
     saveConfig () {
+      this.configSaved = true
+      setTimeout(() => {
+        this.configSaved = false
+      }, 1000)
       this.$emit('config-update', this.config)
       message.sendMsgToBackground(CONTENT_MSG_BIZ_SAVE_CONFIG, this.config)
     },
@@ -113,7 +122,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+html, body {
+  margin: 0;
+  padding: 0;
+}
 .popup-page {
   min-height: 200px;
   min-width: 400px;
@@ -122,6 +135,18 @@ export default {
   .icon {
     margin-left: 10px;
     cursor: pointer;
+  }
+  .title {
+    line-height: 30px;
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgb(218, 218, 218);
+    .saving-text {
+      color: #18dd39;
+      font-size: 12px;
+      float: right;
+    }
   }
 }
 
