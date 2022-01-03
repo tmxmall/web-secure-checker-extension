@@ -1,4 +1,4 @@
-# vue-chrome-extension-boilerplate
+# web-secure-checker-extension
 
 在浏览器运行环境中，对指定网页的网络请求进行拦截和分析，对用户注册登录等页面的密码输入框进行监听分析密码强度
 
