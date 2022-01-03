@@ -69,12 +69,19 @@
         </el-table>
       </el-tab-pane> -->
       <el-tab-pane label="规则说明">
-        <el-table :data="allRulesView" border fit size="mini">
-          <el-table-column type="index"></el-table-column>
-          <el-table-column label="名称" prop="name" width="240px"></el-table-column>
-          <el-table-column label="描述" prop="desc" width="240px"></el-table-column>
-          <el-table-column label="API统计" prop="count" width="240px"></el-table-column>
-        </el-table>
+        <el-row>
+          <el-col :span="12">
+            <el-table :data="allRulesView" border fit size="mini">
+              <el-table-column type="index"></el-table-column>
+              <el-table-column label="名称" prop="name" width="240px"></el-table-column>
+              <el-table-column label="描述" prop="desc"></el-table-column>
+              <el-table-column label="API统计" prop="count" width="80px"></el-table-column>
+            </el-table>
+          </el-col>
+          <el-col :span="12" class="col2">
+            <div id="chart1"></div>
+          </el-col>
+        </el-row>
       </el-tab-pane>
       <el-tab-pane label="插件设置">
         <Popup @config-update="updateConfig"></Popup>
@@ -88,6 +95,7 @@
 </template>
 
 <script>
+import * as G2 from '@antv/g2'
 import localdb from "../biz/db"
 import rule from "../biz/rule"
 import util from "../biz/util"
@@ -103,7 +111,7 @@ export default {
       pageSize: 20,
       currentPage: 1,
       rules: [],
-      showDataRangeHours: 7
+      showDataRangeHours: 168
     }
   },
   computed: {
@@ -167,8 +175,27 @@ export default {
               record.pathname = new URL(record.url).pathname
               return record
             })
+            setTimeout(() => {
+              this.initChart()
+            }, 3000)
           })
       }
+    },
+    initChart () {
+      const data = this.allRulesView
+      // G2 对数据源格式的要求，仅仅是 JSON 数组，数组的每个元素是一个标准 JSON 对象。
+      // Step 1: 创建 Chart 对象
+      const chart = new G2.Chart({
+        container: 'chart1', // 指定图表容器 ID
+        width : 700, // 指定图表宽度
+        height : 500 // 指定图表高度
+      });
+      // Step 2: 载入数据源
+      chart.source(data);
+      // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+      chart.interval().position('name*count').color('count')
+      // Step 4: 渲染图表
+      chart.render();
     }
   },
   created () {
@@ -197,6 +224,13 @@ export default {
   height: 100%;
   .type-item {
     margin: 4px;
+  }
+  .col2 {
+    height: 100%;
+    #chart1 {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>
