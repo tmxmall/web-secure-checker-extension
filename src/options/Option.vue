@@ -47,7 +47,16 @@
           <el-table-column label="API" prop="api" width="240px"></el-table-column>
           <el-table-column label="命中规则" prop="hitTypes">
             <template slot-scope="scope">
-              <el-tag v-for="(hitType, index) in scope.row.hitTypes" :key="index" class="type-item">{{ getHitTypeLabel(hitType) }}</el-tag>
+              <el-tooltip
+                v-for="(hitType, index) in scope.row.hitTypes"
+                :key="index"
+                placement="top"
+                :content="getHitTypeDesc(hitType)"
+              >
+                <el-tag class="type-item">
+                  {{ getHitTypeLabel(hitType) }}
+                </el-tag>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -125,8 +134,11 @@ export default {
     updateConfig (config) {
       this.config = config
     },
+    getHitTypeDesc (hitType) {
+      return (this.rules[hitType] || {}).desc || '无详细描述'
+    },
     getHitTypeLabel (hitType) {
-      return rule.allRulesWithLabel()[hitType] || `识别错误${hitType}`
+      return (this.rules[hitType] || {}).name || '未分类'
     },
     query () {
       const site = this.sites.find(s => s.id === this.currentSite)

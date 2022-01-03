@@ -5,32 +5,71 @@
     <span class="fold-toggle" :class="{even: changeCount % 5 == 0}" @click="toggle">
       {{ fold ? '展开':'收起' }}
     </span>
+    <!-- <el-checkbox v-model="showSubcates">显示详细</el-checkbox> -->
     <div class="checked-result-range" :class="{fold}">
       <!-- 如果开启了密码强度计算且当前页面有密码输入框 -->
       <div v-if="config.pwdCheckEnabeld && hasPasswordInput" class="cate-item">
-        密码强度：<span :class="'strong-' + passWordLevel">{{ passWordLevelLabel }}</span>
+        <span class="text-label">密码强度： </span>
+        <span :class="'strong-' + passWordLevel">{{ passWordLevelLabel }}</span>
       </div>
       <!-- 其他五六类的统计结果展示 -->
-      <el-alert type="warning" :show-icon="false" :closable="false">存在安全隐患的API数量统计：</el-alert>
+      <el-alert type="warning" :show-icon="false" :closable="false">
+        存在安全隐患的API数量统计：
+      </el-alert>
       <div v-if="config.requestDataCheckEnabeld" class="cate-item">
         <span class="text-label">请求安全： </span>
         <animation-number :value="requestCount" class="count-number"></animation-number>
+        <div v-if="showSubcates" :key="totalCount">
+          <div v-for="hitType in kind1Types" :key="hitType" class="sub-cate">
+            {{ getHitTypeLabel(hitType) }}
+            ：
+            {{ getHitTypeCount(hitType) }}
+          </div>
+        </div>
       </div>
       <div v-if="config.responseDataCheckEnabeld" class="cate-item">
         <span class="text-label">敏感数据： </span>
         <animation-number :value="responseCount" class="count-number"></animation-number>
+        <div v-if="showSubcates" :key="totalCount">
+          <div v-for="hitType in kind2Types" :key="hitType" class="sub-cate">
+            {{ getHitTypeLabel(hitType) }}
+            ：
+            {{ getHitTypeCount(hitType) }}
+          </div>
+        </div>
       </div>
       <div v-if="config.crossSiteCheckEnabeld" class="cate-item">
         <span class="text-label">跨域访问： </span>
         <animation-number :value="crossSiteCount" class="count-number"></animation-number>
+        <div v-if="showSubcates" :key="totalCount">
+          <div v-for="hitType in kind3Types" :key="hitType" class="sub-cate">
+            {{ getHitTypeLabel(hitType) }}
+            ：
+            {{ getHitTypeCount(hitType) }}
+          </div>
+        </div>
       </div>
       <div v-if="config.siteCheckEnabeld" class="cate-item">
         <span class="text-label">站点安全： </span>
         <animation-number :value="siteSecureCount" class="count-number"></animation-number>
+        <div v-if="showSubcates" :key="totalCount">
+          <div v-for="hitType in kind4Types" :key="hitType" class="sub-cate">
+            {{ getHitTypeLabel(hitType) }}
+            ：
+            {{ getHitTypeCount(hitType) }}
+          </div>
+        </div>
       </div>
       <div v-if="config.performanceCheckEnabeld" class="cate-item">
         <span class="text-label">加载性能： </span>
         <animation-number :value="performanceCount" class="count-number"></animation-number>
+        <div v-if="showSubcates" :key="totalCount">
+          <div v-for="hitType in kind5Types" :key="hitType" class="sub-cate">
+            {{ getHitTypeLabel(hitType) }}
+            ：
+            {{ getHitTypeCount(hitType) }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -39,6 +78,7 @@
 import util from '../biz/util'
 import * as message from '../biz/message'
 import { CONTENT_MSG_BIZ_GET_CONFIG, CONTENT_MSG_BIZ_LOAD_ALL_DATA, CONTENT_MSG_BIZ_NEW_DATA_RECEVIED, CONTENT_MSG_BIZ_SAVE_CONFIG, HIT_TYPE_CROSS_SITE, HIT_TYPE_DELETE_WITHOUT_PARAM, HIT_TYPE_DELETE_WITH_GET, HIT_TYPE_FREQUENCE, HIT_TYPE_HTTP_ONLY, HIT_TYPE_MAX_PAGE_SIZE, HIT_TYPE_NON_HTTPS, HIT_TYPE_PERFORMANCE_1, HIT_TYPE_RES_KEY_PASSWORD, HIT_TYPE_RES_KEY_SECURE, HIT_TYPE_RES_KEY_USERINFO, HIT_TYPE_RES_KEY_VCODE, HIT_TYPE_RES_TIME_TOO_LONG, HIT_TYPE_RES_VALUE_BANKCARD, HIT_TYPE_RES_VALUE_BODY_TOO_LARGE, HIT_TYPE_RES_VALUE_EMAIL, HIT_TYPE_RES_VALUE_ID, HIT_TYPE_RES_VALUE_PHONE, HIT_TYPE_RES_VALUE_VCODE, HIT_TYPE_SAME_SITE, UNIQUE_INJECT_ID } from '../biz/common'
+import rule from '../biz/rule'
 
 /**
  * 插件支持配置多个contentjs脚本，可以在文档加载之前就注入一段脚本，对xmlHttpRequest类进行覆盖重构
@@ -92,7 +132,14 @@ export default {
       // 对分类后的统计结果进行分别级别计算显示不一样的颜色样式
       // 需要监听消息，对新命中的规则的记录数据获取并添加到数组
       collectedData: [],
-      changeCount: 1
+      changeCount: 1,
+      allRules: [],
+      kind1Types,
+      kind2Types,
+      kind3Types,
+      kind4Types,
+      kind5Types,
+      showSubcates: false
     }
   },
   computed: {
@@ -112,6 +159,7 @@ export default {
     }
   },
   created () {
+    this.allRules = rule.allRulesWithLabel()
     message.initMsg((bizType, msg) => {
       if (bizType === CONTENT_MSG_BIZ_SAVE_CONFIG) {
         // 插件配置有更新
@@ -156,6 +204,13 @@ export default {
     })
   },
   methods: {
+    getHitTypeLabel (hitType) {
+      return (this.allRules[hitType] || {}).name || '未分类'
+    },
+    getHitTypeCount (hitType) {
+      // 从collectedData中统计
+      return this.collectedData.filter(record => record.hitTypes.includes(hitType)).length
+    },
     initWhenEnable () {
       // 初始化绑定监听事件
       // 注入一个inject.js
@@ -241,6 +296,8 @@ export default {
   top: 10px;
   width: 300px;
   min-height: 30px;
+  max-height: 600px;
+  overflow: auto;
   padding: 10px;
   border: 1px dashed rgb(163, 163, 163);
   // opacity: 0.5;
@@ -282,12 +339,16 @@ export default {
     .text-label {
       display: inline-block;
       vertical-align: middle;
+      font-weight: bold;
     }
     .count-number {
       font-size: 30px;
       vertical-align: middle;
       margin-left: 20px;
       color: red;
+    }
+    .sub-cate {
+      text-indent: 2em;
     }
   }
   .strong-0 {

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { HIT_TYPE_CROSS_SITE, HIT_TYPE_DELETE_WITHOUT_PARAM, HIT_TYPE_DELETE_WITH_GET, HIT_TYPE_FREQUENCE, HIT_TYPE_HTTP_ONLY, HIT_TYPE_MAX_PAGE_SIZE, HIT_TYPE_NON_HTTPS, HIT_TYPE_PERFORMANCE_1, HIT_TYPE_RES_KEY_PASSWORD, HIT_TYPE_RES_KEY_SECURE, HIT_TYPE_RES_KEY_USERINFO, HIT_TYPE_RES_KEY_VCODE, HIT_TYPE_RES_TIME_TOO_LONG, HIT_TYPE_RES_VALUE_BODY_TOO_LARGE, HIT_TYPE_RES_VALUE_EMAIL, HIT_TYPE_RES_VALUE_ID, HIT_TYPE_RES_VALUE_PHONE, HIT_TYPE_RES_VALUE_VCODE, HIT_TYPE_SAME_SITE, HIT_TYPE_UNHANDLED_EXCEPTION } from "./common"
+import { HIT_TYPE_CROSS_SITE, HIT_TYPE_DELETE_WITHOUT_PARAM, HIT_TYPE_DELETE_WITH_GET, HIT_TYPE_FREQUENCE, HIT_TYPE_HTTP_ONLY, HIT_TYPE_MAX_PAGE_SIZE, HIT_TYPE_NON_HTTPS, HIT_TYPE_PERFORMANCE_1, HIT_TYPE_RES_KEY_PASSWORD, HIT_TYPE_RES_KEY_SECURE, HIT_TYPE_RES_KEY_USERINFO, HIT_TYPE_RES_KEY_VCODE, HIT_TYPE_RES_TIME_TOO_LONG, HIT_TYPE_RES_VALUE_BANKCARD, HIT_TYPE_RES_VALUE_BODY_TOO_LARGE, HIT_TYPE_RES_VALUE_EMAIL, HIT_TYPE_RES_VALUE_ID, HIT_TYPE_RES_VALUE_PHONE, HIT_TYPE_RES_VALUE_VCODE, HIT_TYPE_SAME_SITE, HIT_TYPE_UNHANDLED_EXCEPTION } from "./common"
 import localdb from "./db"
 import util from "./util"
 const isStringHasOneWord = (str, keywords) => {
@@ -28,28 +28,30 @@ export default {
     }
     return 3
   },
+  // 规则名称和对应的详细描述
   allRulesWithLabel () {
     return {
-      [HIT_TYPE_CROSS_SITE]: '跨域访问',
-      [HIT_TYPE_DELETE_WITHOUT_PARAM]: '删除请求无参数',
-      [HIT_TYPE_DELETE_WITH_GET]: '删除请求为GET',
-      [HIT_TYPE_FREQUENCE]: '访问频率异常',
-      [HIT_TYPE_HTTP_ONLY]: 'Cookie未设置Http-Only',
-      [HIT_TYPE_MAX_PAGE_SIZE]: '分页查询单页数据过多',
-      [HIT_TYPE_NON_HTTPS]: '未开启Https',
-      [HIT_TYPE_PERFORMANCE_1]: '加载性能问题',
-      [HIT_TYPE_RES_KEY_PASSWORD]: '响应结果包含密码',
-      [HIT_TYPE_RES_KEY_SECURE]: '响应结果包含安全配置字段',
-      [HIT_TYPE_RES_KEY_USERINFO]: '响应结果包含用户信息',
-      [HIT_TYPE_RES_KEY_VCODE]: '验证码字段',
-      [HIT_TYPE_RES_TIME_TOO_LONG]: '响应超时',
-      [HIT_TYPE_RES_VALUE_BODY_TOO_LARGE]: '响应体过大',
-      [HIT_TYPE_RES_VALUE_EMAIL]: '响应包含邮箱',
-      [HIT_TYPE_RES_VALUE_ID]: '响应包含身份证号',
-      [HIT_TYPE_RES_VALUE_PHONE]: '响应包含手机号',
-      [HIT_TYPE_RES_VALUE_VCODE]: '响应包含验证码',
-      [HIT_TYPE_SAME_SITE]: '未设置防内嵌',
-      [HIT_TYPE_UNHANDLED_EXCEPTION]: '出现未处理异常',
+      [HIT_TYPE_DELETE_WITH_GET]: {name: 'GET删除', desc: '删除请求方式为GET'},
+      [HIT_TYPE_DELETE_WITHOUT_PARAM]: {name: '删除无参', desc: '删除请求中没有指定的删除范围参数'},
+      [HIT_TYPE_MAX_PAGE_SIZE]: {name: '大单页查询', desc: '分页查询的单页数据量偏大'},
+      [HIT_TYPE_RES_KEY_PASSWORD]: {name: '含密码字段', desc: '响应结果中包含密码敏感字段'},
+      [HIT_TYPE_RES_KEY_SECURE]: {name: '含敏感配置字段', desc: '响应结果中包含后台账号配置，安全密钥等配置字段'},
+      [HIT_TYPE_RES_KEY_USERINFO]: {name: '含用户信息字段', desc: '响应结果中包含个人用户信息'},
+      [HIT_TYPE_RES_KEY_VCODE]: {name: '验证码字段', desc: '响应结果中包含激活码，验证码，状态码等字段'},
+      [HIT_TYPE_RES_VALUE_PHONE]: {name: '含手机号', desc: '响应结果中包含未加密手机号'},
+      [HIT_TYPE_RES_VALUE_EMAIL]: {name: '含邮箱', desc: '响应结果中包含未加密邮箱'},
+      [HIT_TYPE_RES_VALUE_ID]: {name: '含身份证号', desc: '响应结果中包含未加密身份证号'},
+      [HIT_TYPE_RES_VALUE_BANKCARD]: {name: '含银行卡号', desc: '响应结果中包含未加密银行卡号'},
+      [HIT_TYPE_RES_VALUE_VCODE]: {name: '含验证码', desc: '响应结果中包含验证码'},
+      [HIT_TYPE_RES_VALUE_BODY_TOO_LARGE]: {name: '响应体积超大', desc: '响应结果的内容数据太大'},
+      [HIT_TYPE_RES_TIME_TOO_LONG]: {name: '响应超时', desc: '响应结果消耗时长过长'},
+      [HIT_TYPE_CROSS_SITE]: {name: '跨域访问', desc: '网站中出现跨域访问第三方网站'},
+      [HIT_TYPE_FREQUENCE]: {name: '访问频率异常', desc: '访问频率异常'},
+      [HIT_TYPE_UNHANDLED_EXCEPTION]: {name: 'JS异常检测', desc: '网站中存在未正确处理的异常'},
+      [HIT_TYPE_NON_HTTPS]: {name: '未开启Https', desc: '未开启Https'},
+      [HIT_TYPE_HTTP_ONLY]: {name: 'Cookie Http-Only', desc: 'Cookie未设置Http-Only安全机制'},
+      [HIT_TYPE_SAME_SITE]: {name: 'Same-Site', desc: '未设置禁止iframe嵌套加载'},
+      [HIT_TYPE_PERFORMANCE_1]: {name: '加载性能', desc: '加载性能'}
     }
   },
   allRules () {
