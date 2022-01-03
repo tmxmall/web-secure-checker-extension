@@ -61,23 +61,28 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="规则统计">
-        <!-- <el-table :data="uniqueApis" border fit size="mini">
+      <!-- <el-tab-pane label="规则统计">
+        <el-table :data="uniqueApis" border fit size="mini">
           <el-table-column type="index"></el-table-column>
           <el-table-column label="API" prop="api" width="240px"></el-table-column>
           <el-table-column label="命中次数" prop="count" width="60px"></el-table-column>
-        </el-table> -->
-      </el-tab-pane>
+        </el-table>
+      </el-tab-pane> -->
       <el-tab-pane label="规则说明">
-        {{rules}}
+        <el-table :data="allRulesView" border fit size="mini">
+          <el-table-column type="index"></el-table-column>
+          <el-table-column label="名称" prop="name" width="240px"></el-table-column>
+          <el-table-column label="描述" prop="desc" width="240px"></el-table-column>
+          <el-table-column label="API统计" prop="count" width="240px"></el-table-column>
+        </el-table>
       </el-tab-pane>
       <el-tab-pane label="插件设置">
         <Popup @config-update="updateConfig"></Popup>
       </el-tab-pane>
-      <el-tab-pane label="API Poster">
+      <!-- <el-tab-pane label="API Poster">
         <p>实现一个快速重现API请求的工具</p>
         <p>实现一个简易版postman工具，但是会自动注入当前所选网站的cookie,从当前active tab中获取可用cookie</p>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
@@ -102,9 +107,7 @@ export default {
     }
   },
   computed: {
-    sites () {
-      return this.config.sites || []
-    },
+    sites () { return this.config.sites || [] },
     currentPageViewList () {
       let current = this.currentPage
       if (this.data.length <= this.pageSize) {
@@ -128,6 +131,15 @@ export default {
     ruleDetails () {
       // 对每一个规则的详细描述
       return []
+    },
+    allRulesView () {
+      return this.allRules.map(hitType => {
+        return {
+          name: this.getHitTypeLabel(hitType),
+          desc: this.getHitTypeDesc(hitType),
+          count: this.getHitApiCount(hitType)
+        }
+      }).sort((a, b) => a.count - b.count > 0 ? -1 : 1)
     }
   },
   methods: {
@@ -139,6 +151,9 @@ export default {
     },
     getHitTypeLabel (hitType) {
       return (this.rules[hitType] || {}).name || '未分类'
+    },
+    getHitApiCount (hitType) {
+      return this.data.filter(record => record.hitTypes.includes(hitType)).length
     },
     query () {
       const site = this.sites.find(s => s.id === this.currentSite)
@@ -158,6 +173,7 @@ export default {
   },
   created () {
     this.rules = rule.allRulesWithLabel()
+    this.allRules = rule.allRules()
     /**
      * load the configuation
      */
