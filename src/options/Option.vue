@@ -222,6 +222,7 @@ export default {
   min-height: 200px;
   min-width: 400px;
   height: 100%;
+  padding: 10px;
   .type-item {
     margin: 4px;
   }
